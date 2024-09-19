@@ -1,7 +1,7 @@
 import { Iconsultas} from "../interfaces/interfaces"
 import { ACS } from "../global";
 
-export function criarMensagem(consulta:Iconsultas): String{
+export function criarMensagem(consulta:Iconsultas): string{
 
     let horaAtual = new Date().getHours()
     let saudacao: string = horaAtual > 6 && horaAtual < 13 ? "Bom dia" : "Boa Tarde"
@@ -13,13 +13,29 @@ export function criarMensagem(consulta:Iconsultas): String{
 }
 
 export function criarMensagemACS(consultas:Iconsultas[]){
+
+    console.log("Iniciando ACS")
     for (let i = 0; i < consultas.length; i++) {
         
         for (let j = 0; j < ACS.length; j++) {
+            
             if(consultas[i].ACS == ACS[j].nome){
-                ACS[j].mensagem.concat(ACS[j].mensagem, `- ${consultas[i].NOME} ás *Dia ${consultas[i].DATA_AGENDADA} ${consultas[i].HORA_AGENDADA}* \n`)
+
+                ACS[j].avisar = true
+                ACS[j].mensagem += `- ${consultas[i].NOME} ás *Dia ${consultas[i].DATA_AGENDADA} ${consultas[i].HORA_AGENDADA}* \n`
             }
         }
     
     }
 }
+
+/*
+
+consultas.forEach((value)=>{
+
+    let IndexArrayACS = ACS.findIndex((elemento) => elemento.nome == value.ACS)
+    ACS[IndexArrayACS].mensagem += criarMensagemACS(value)
+
+})
+
+*/

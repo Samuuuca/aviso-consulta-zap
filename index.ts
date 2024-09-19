@@ -1,5 +1,12 @@
 import { mandarMsg } from "./src/controller/controller";
-mandarMsg("8")
+import {iniciarClient} from "./src/model/bot"
+
+iniciarClient()
+
+export function servidorIniciado(){
+    mandarMsg("9")
+}
+
 
 // const readline = require("node:readline")
 

@@ -3,14 +3,13 @@ import { Iconsultas } from "../interfaces/interfaces"
 const csvtojson = require('csvtojson')
 
 
-export async function gerarJSON(mes: number): Promise<Iconsultas[]>{
+export async function gerarJSON(caminhoArquivo: string): Promise<Iconsultas[]>{
 
-        let pathCSV = `C:/Users/LNV3-Saúde/Downloads/AGENDA_Dr. João - ${retornaMes(mes)} - 2024.csv`
-        let consultas = await csvtojson().fromFile(pathCSV)
-        return consultas
+    let pathCSV = caminhoArquivo
+    let consultas = await csvtojson().fromFile(pathCSV)
+    return consultas
 
 }
-
 
 function retornaMes(mesNumber:number) {
 

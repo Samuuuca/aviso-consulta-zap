@@ -1,20 +1,22 @@
 export interface Iconsultas{
-    QTND: String,
-    MATRICULA: String,
-    NOME: String,
-    LOCAL: String,
+    QTND: string,
+    MATRICULA: string,
+    NOME: string,
+    LOCAL: string,
     ACS: String,
-    NUMERO: String,	
-    DATA_AGENDADA: String,	
-    HORA_AGENDADA: String,	
-    TIPO_CONSULTA: String,	
-    OBSERVAÇÃO: String,	
-    AVISADO: String,	
-    RETORNO: String
+    NUMERO: string,	
+    DATA_AGENDADA: string,	
+    HORA_AGENDADA: string,	
+    TIPO_CONSULTA: string,	
+    OBSERVAÇÃO: string,	
+    AVISADO: string,	
+    RETORNO: string
 }
 
 export interface IacsObject{
     nome:string,
     contato: string,
-    mensagem: string
+    mensagem: string,
+    avisar: boolean
+
 }

@@ -1,31 +1,32 @@
 import { Iconsultas } from "../interfaces/interfaces"
-import { criarMensagem } from "../model/gerarMsg";
+import { criarMensagem, criarMensagemACS } from "../model/gerarMsg";
 import { gerarJSON } from '../model/gerarJSON'
+import { enviarMensagem } from "../model/bot";
+import { ACS } from "../global";
+import {authorize,planilhaEspecifica} from '../model/driveDownload'
 
 
 let consultasSemContato: Iconsultas[] = [];
-let pacintesImposiveisAvisar = [];
+let pacintesImposiveisAvisar:string[];
+
 export async function mandarMsg(mes:string){
 
-    let consultas = await gerarJSON(parseInt(mes))
+    let caminhoArquivo = await authorize().then(planilhaEspecifica).catch(console.error);
+    
+    if(caminhoArquivo){
+        let consultas = await gerarJSON(caminhoArquivo)
+        let consultasValidas = validarConsulta(consultas);
 
-    let consultasValidas = validarConsulta(consultas);
+        consultasValidas.forEach((consultaInfo)=>{
 
-    if (consultasSemContato.length) {
-        validarConsultasACS(consultasSemContato)
-    }
+            enviarMensagem(consultaInfo.NUMERO,criarMensagem(consultaInfo))
+        })
 
-    for (let i = 0; i < consultasValidas.length; i++) {
+        criarMensagemACS(consultasSemContato)
+        enviarMensagemACS()
         
-        console.log("---> " + criarMensagem(consultasValidas[i]))
-    
+        console.log(pacintesImposiveisAvisar)
     }
-
-}
-
-function validarConsultasACS(consultaSemContato:Iconsultas[]) {
-    
-    return consultaSemContato.filter((consulta)=> consulta.ACS != "")
 
 }
 
@@ -37,7 +38,13 @@ function validarConsulta(consultas:Iconsultas[]){
             return false
         }
         else if(consulta.NUMERO == ""){ // Verifica se tem como avisar
-            consultasSemContato.push(consulta)
+            
+            if(consulta.ACS != "" || !(consulta.ACS == "S/ACS")){ // Valida de tem o contato de uma ACS 
+                consultasSemContato.push(consulta)
+            }
+            else{
+                pacintesImposiveisAvisar.push(consulta.NOME)
+            }
             return false
         }
         else if(consulta.AVISADO == "TRUE"){ // Verificar se ja nao foi Avisada
@@ -49,5 +56,18 @@ function validarConsulta(consultas:Iconsultas[]){
     })
 
     return consultasValidas
+
+}
+
+function enviarMensagemACS(){
+
+    ACS.forEach((value)=>{
+
+        if(value.avisar){
+            enviarMensagem(value.contato,value.mensagem)
+            console.log("---> " + value.nome +" "+ value.contato + " " +value.mensagem)
+        }
+        
+    })
 
 }
